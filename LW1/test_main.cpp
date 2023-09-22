@@ -6,7 +6,7 @@ TEST(TextReplaceTest, test1) {
 }
 
 TEST(TextReplaceTest, test2) {
-    ASSERT_EQ(textReplace("abacadaef", 1, 'a', 'X'), "abacadaef");
+    ASSERT_EQ(textReplace("abacadaef", 1, 'a', 'X'), "XbXcXdXef");
 }
 
 TEST(TextReplaceTest, test3) {

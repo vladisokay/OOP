@@ -1,24 +1,15 @@
 #include "textReplace.h"
 
-std::string textReplace(std::string text, int n, char old_value, char new_value) {
+std::string textReplace(std::string const &text, int n, char old_value, char new_value) {
+
+    std::string result = text;
 
     if (n <= 0) {
         return text;
     }
 
-    int countOldValue = 0;
-    for (char &currentSymbol : text) {
-        if (currentSymbol == old_value) {
-            ++countOldValue;
-        }
-    }
-
-    if (n < countOldValue) {
-        return text;
-    }
-
     int count = 0;
-    for (char &currentSymbol : text) {
+    for (char &currentSymbol : result) {
         if (currentSymbol == old_value) {
             ++count;
             if (count % n == 0) {
@@ -27,5 +18,5 @@ std::string textReplace(std::string text, int n, char old_value, char new_value)
         }
     }
 
-    return text;
+    return result;
 }
