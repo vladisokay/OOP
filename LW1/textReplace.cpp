@@ -1,6 +1,6 @@
 #include "textReplace.h"
 
-std::string textReplace(std::string const &text, int n, char old_value, char new_value) {
+std::string textReplace(std::string const& text, int n, char old_value, char new_value) {
 
     std::string result = text;
 
