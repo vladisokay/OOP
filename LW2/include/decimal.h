@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
@@ -21,7 +23,9 @@ public:
 
     Decimal& operator=(const Decimal& other);
     Decimal operator+(const Decimal& other) const;
-    Decimal operator-(const Decimal& other) const;
+    Decimal operator-(const Decimal& other);
+    Decimal& operator+=(const Decimal& value);
+    Decimal& operator-=(const Decimal& value);
     Decimal& operator++();
     Decimal operator++(int);
     Decimal& operator--();
@@ -37,5 +41,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Decimal& t);
 
     void print() const;
+    size_t getSize() const;
+    std::string toString() const;
 
 };
