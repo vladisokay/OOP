@@ -36,6 +36,14 @@ Decimal::Decimal(const Decimal& other) : size(other.size) {
     }
 }
 
+Decimal::Decimal(Decimal&& move) noexcept : digits(nullptr), size(0){
+    digits = move.digits;
+    size = move.size;
+
+    move.digits = nullptr;
+    move.size = 0;
+}
+
 Decimal::~Decimal() noexcept {
     delete[] digits;
 }
@@ -53,12 +61,16 @@ Decimal& Decimal::operator=(const Decimal& other) {
     return *this;
 }
 
-
 Decimal Decimal::operator+(const Decimal& other) const {
     size_t maxSize = std::max(size, other.size);
     Decimal result;
     result.size = maxSize + 1;
     result.digits = new unsigned char[result.size];
+
+    for (size_t i = 0; i < result.size; ++i) {
+        result.digits[i] = 0;
+    }
+
 
     int carry = 0;
     for (size_t i = 0; i < maxSize; ++i){
@@ -80,7 +92,7 @@ Decimal Decimal::operator+(const Decimal& other) const {
     } else {
         result.size--;
         unsigned char* newData = new unsigned char[result.size];
-        for (size_t i = 0; i < size; ++i) {
+        for (size_t i = 0; i < result.size; ++i) {
             newData[i] = result.digits[i + 1];
         }
     }

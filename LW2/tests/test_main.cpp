@@ -19,6 +19,10 @@ TEST(decimalTest, constructAndAssig) {
     EXPECT_EQ(d4.getSize(), 4);
     EXPECT_EQ(d4.toString(), "6783");
 
+    Decimal labuda("42");
+    Decimal copy(labuda);
+    EXPECT_EQ(copy, labuda);
+
     Decimal d5(d2);
     EXPECT_EQ(d5.getSize(), 3);
     EXPECT_EQ(d5.toString(), "666");

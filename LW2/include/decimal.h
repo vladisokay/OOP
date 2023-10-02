@@ -18,6 +18,7 @@ public:
     Decimal(const std::initializer_list<unsigned char> &values);
     Decimal(const std::string& str);
     Decimal(const Decimal& other);
+    Decimal(Decimal&& move) noexcept;
 
     virtual ~Decimal() noexcept;
 
