@@ -218,9 +218,9 @@ Decimal& Decimal::operator--() {
 }
 
 Decimal Decimal::operator--(int) {
-    Decimal* temp = this;
-    *temp -= Decimal("1");
-    return *temp;
+    Decimal temp = *this;
+    *this -= Decimal("1");
+    return temp;
 }
 
 std::ostream& operator<<(std::ostream& stream, const Decimal& digits) {

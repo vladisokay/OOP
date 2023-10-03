@@ -2,124 +2,193 @@
 #include "../include/decimal.h"
 
 
-TEST(decimalTest, constructAndAssig) {
-    Decimal d1;
-    EXPECT_EQ(d1.getSize(), 0);
-    EXPECT_EQ(d1.toString(), "");
-
-    Decimal d2(3, 6);
-    EXPECT_EQ(d2.getSize(), 3);
-    EXPECT_EQ(d2.toString(), "666");
-
-    Decimal d3 = {1, 2, 3, 4, 5, 6};
-    EXPECT_EQ(d3.getSize(), 6);
-    EXPECT_EQ(d3.toString(), "123456");
-
-    Decimal d4("6783");
-    EXPECT_EQ(d4.getSize(), 4);
-    EXPECT_EQ(d4.toString(), "6783");
-
-    Decimal labuda("42");
-    Decimal copy(labuda);
-    EXPECT_EQ(copy, labuda);
-
-    Decimal d5(d2);
-    EXPECT_EQ(d5.getSize(), 3);
-    EXPECT_EQ(d5.toString(), "666");
-
-    Decimal d6;
-    d6 = d3;
-    EXPECT_EQ(d6.getSize(), 6);
-    EXPECT_EQ(d6.toString(), "123456");
-
+TEST(decimalConstructor, defaultConstructor) {
+    Decimal d;
+    EXPECT_EQ(d.getSize(), 0);
 }
 
-TEST(decimalTest, arithmeticOperators) {
+TEST(decimalConstructor, sizeAndValueConstructor) {
+    Decimal d(5, 7);
+    EXPECT_EQ(d.getSize(), 5);
+    EXPECT_EQ(d.toString(), "77777");
+}
+
+TEST(decimalConstructor, initializerListConstructor) {
+    Decimal d({1, 2, 3, 4, 5});
+    EXPECT_EQ(d.getSize(), 5);
+    EXPECT_EQ(d.toString(), "12345");
+}
+
+TEST(decimalConstructor, stringConstructor) {
+    Decimal d("666");
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "666");
+}
+
+TEST(decimalConstructor, invalidStringConstructor) {
+    EXPECT_THROW({
+        try {
+            Decimal d("123asd34");
+        } catch (const std::invalid_argument& e) {
+            EXPECT_STREQ("Invalid charapter in input", e.what());
+            throw;
+        }
+    }, std::invalid_argument);
+}
+
+TEST(decimalConstructor, moveConstructor) {
+    Decimal original("123");
+    Decimal moved(std::move(original));
+    
+    EXPECT_EQ(original.getSize(), 0);
+    
+    EXPECT_EQ(moved.getSize(), 3);
+    EXPECT_EQ(moved.toString(), "123");
+}
+
+TEST(decimalOperators, assign) {
+    Decimal d("666");
+    Decimal d1 = d;
+    EXPECT_EQ(d1.getSize(), 3);
+    EXPECT_EQ(d1.toString(), "666");
+}
+
+
+TEST(decimalOperators, plusOperator) {
+    Decimal d("5816");
+    Decimal d1("3762");
+    Decimal result = d + d1;
+    EXPECT_EQ(result.getSize(), 4);
+    EXPECT_EQ(result.toString(), "9578");
+}
+
+TEST(decimalOperators, minusOperator) {
+    Decimal d("9999");
+    Decimal d1("762");
+    Decimal result = d - d1;
+    EXPECT_EQ(result.getSize(), 4);
+    EXPECT_EQ(result.toString(), "9237");
+}
+
+TEST(decimalOperators, invalidMinusOperator) {
+    Decimal d("123");
+    Decimal d1("124");
+    
+    EXPECT_THROW({
+        try {
+            Decimal result = d - d1;
+        } catch (const std::invalid_argument& e) {
+            EXPECT_STREQ("Result is a negative or zero number", e.what());
+            throw;
+        }
+    }, std::invalid_argument);
+}
+
+TEST(decimalOperators, minusOperatorTwo) {
+    Decimal d("123");
     Decimal d1("123");
-    Decimal d2("456");
-
-    Decimal sum = d1 + d2;
-    EXPECT_EQ(sum.getSize(), 3);
-    EXPECT_EQ(sum.toString(), "579");
-
-    Decimal diff = d2 - d1;
-    EXPECT_EQ(diff.getSize(), 3);
-    EXPECT_EQ(diff.toString(), "333");
-
-    try {
-        Decimal diff2 = d1 - d2;
-        FAIL() << "Expected an exception, but subtraction was successful";
-    } catch (const std::invalid_argument& e) {
-        EXPECT_STREQ(e.what(), "Result is a negative or zero number");
-    }
+    Decimal result = d - d1;
+    EXPECT_EQ(result.getSize(), 1);
+    EXPECT_EQ(result.toString(), "0");
 }
 
-TEST(decimalTest, comparisonOperators) {
+
+TEST(decimalOperators, lessThanOperator) {
     Decimal d1("123");
     Decimal d2("456");
     Decimal d3("123");
-
-    EXPECT_LT(d1, d2);
-    EXPECT_FALSE(d2 < d1);
-    EXPECT_FALSE(d1 < d3);
     EXPECT_TRUE(d1 < d2);
-    EXPECT_TRUE(d3 < d2);
-
-    EXPECT_GT(d2, d1);
-    EXPECT_FALSE(d1 > d2);
-    EXPECT_FALSE(d1 > d3);
-    EXPECT_TRUE(d2 > d3);
-
-    EXPECT_LE(d1, d2);
-    EXPECT_LE(d1, d3);
-    EXPECT_FALSE(d2 <= d1);
-
-    EXPECT_GE(d2, d1);
-    EXPECT_GE(d1, d3);
-    EXPECT_FALSE(d1 >= d2);
+    EXPECT_FALSE(d2 < d1);
+    EXPECT_FALSE(d3 < d1);
 }
 
-TEST(decimalTest, equalOperators) {
+TEST(decimalOperators, greaterThanOperator) {
+    Decimal d1("789");
+    Decimal d2("123");
+    Decimal d3("123");
+    EXPECT_TRUE(d1 > d2);
+    EXPECT_FALSE(d2 > d1);
+    EXPECT_FALSE(d2 > d3);
+}
+
+TEST(decimalOperators, lessThanOrEqualOperator) {
+    Decimal d1("123");
+    Decimal d2("456");
+    Decimal d3("123");
+    Decimal d4("999");
+    EXPECT_TRUE(d1 <= d2);
+    EXPECT_TRUE(d1 <= d3);
+    EXPECT_FALSE(d4 <= d1);
+}
+
+TEST(decimalOperators, greaterThanOrEqualOperator) {
+    Decimal d1("789");
+    Decimal d2("123");
+    Decimal d3("789");
+    EXPECT_TRUE(d1 >= d2);
+    EXPECT_TRUE(d1 >= d3);
+}
+
+TEST(decimalOperators, equalityOperator) {
     Decimal d1("123");
     Decimal d2("123");
     Decimal d3("456");
+    EXPECT_TRUE(d1 == d2);
+    EXPECT_FALSE(d1 == d3);
+}
 
-    EXPECT_EQ(d1, d2);
-    EXPECT_NE(d1, d3);
-
+TEST(decimalOperators, inequalityOperator) {
+    Decimal d1("123");
+    Decimal d2("123");
+    Decimal d3("456");
     EXPECT_FALSE(d1 != d2);
+    EXPECT_TRUE(d1 != d3);
 }
 
 
-TEST(decimalTest, incrementAndDectement) {
-    Decimal d1 = {1, 2, 3};
-
-    ++d1;
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "124");
-
-    d1++;
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "125");
-
-    Decimal d2 = --d1;
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "124");
-    EXPECT_EQ(d2.getSize(), 3);
-    EXPECT_EQ(d2.toString(), "124");
-
-    d1--;
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "123");
-
-    Decimal d3 = --d2;
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "123");
-    EXPECT_EQ(d1.getSize(), 3);
-    EXPECT_EQ(d1.toString(), "123");
+TEST(decimalOperators, preIncrementOperator) {
+    Decimal d("123");
+    ++d;
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "124");
 }
 
-TEST(decimalTest, printNum) {
+TEST(decimalOperators, postIncrementOperator) {
+    Decimal d("123");
+    Decimal result = d++;
+    EXPECT_EQ(result.getSize(), 3);
+    EXPECT_EQ(result.toString(), "123");
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "124");
+}
+
+TEST(decimalOperators, preDecrementOperator) {
+    Decimal d("123");
+    --d;
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "122");
+}
+
+TEST(decimalOperators, postDecrementOperator) {
+    Decimal d("123");
+    Decimal result = d--;
+    EXPECT_EQ(result.getSize(), 3);
+    EXPECT_EQ(result.toString(), "123");
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "122");
+}
+
+
+TEST(decimalOperators, outputOperator) {
+    Decimal d("789");
+    testing::internal::CaptureStdout();
+    std::cout << d;
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ(output, "789");
+}
+
+
+TEST(decimalMethods, printNum) {
     Decimal d1("12345");
     testing::internal::CaptureStdout();
     d1.print();

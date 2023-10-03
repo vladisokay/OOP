@@ -33,8 +33,5 @@ int main() {
 
     std::cout << "d2 == d3  -- " << (d2 == d3) << std::endl;
 
-
-
-
     return 0;
 }
