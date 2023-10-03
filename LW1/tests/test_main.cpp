@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "textReplace.h"
+#include "../include/textReplace.h"
 
 TEST(TextReplaceTest, test1) {
     ASSERT_EQ(textReplace("Hello, World!", 3, 'l', 'X'), "Hello, WorXd!");

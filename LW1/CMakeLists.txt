@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
-project(MyProject)
+project(labWork_1)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(lw1 main.cpp textReplace.cpp)
-
-add_executable(tests test_main.cpp textReplace.cpp)
+add_executable(lw1 main.cpp ../src/textReplace.cpp)
+add_executable(tests ../tests/test_main.cpp ../src/textReplace.cpp)
 
 find_package(GTest REQUIRED)
 target_link_libraries(tests GTest::GTest GTest::Main)

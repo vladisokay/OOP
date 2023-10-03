@@ -1,4 +1,4 @@
-#include "textReplace.h"
+#include "include/textReplace.h"
 
 int main() {
     std::string text;
