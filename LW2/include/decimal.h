@@ -24,7 +24,7 @@ public:
 
     Decimal& operator=(const Decimal& other);
     Decimal operator+(const Decimal& other) const;
-    Decimal operator-(const Decimal& other);
+    Decimal operator-(const Decimal& other) const;
     Decimal& operator+=(const Decimal& value);
     Decimal& operator-=(const Decimal& value);
     Decimal& operator++();

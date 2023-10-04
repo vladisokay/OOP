@@ -64,80 +64,49 @@ Decimal& Decimal::operator=(const Decimal& other) {
 Decimal Decimal::operator+(const Decimal& other) const {
     size_t maxSize = std::max(size, other.size);
     Decimal result;
-    result.size = maxSize + 1;
-    result.digits = new unsigned char[result.size];
-
-    for (size_t i = 0; i < result.size; ++i) {
-        result.digits[i] = 0;
-    }
-
-
-    int carry = 0;
-    for (size_t i = 0; i < maxSize; ++i){
-        int sum = carry;
-
-        if (i < size) {
-            sum += digits[size - 1 - i];
-        }
-        if (i < other.size) { 
-            sum += other.digits[other.size - 1 - i];
-        }
-
-        result.digits[maxSize - 1 - i] = sum % 10;
-        carry = sum / 10;
-    }
-
-    if (carry > 0) {
-        result.digits[0] = carry;
-    } else {
-        result.size--;
-        unsigned char* newData = new unsigned char[result.size];
-        for (size_t i = 0; i < result.size; ++i) {
-            newData[i] = result.digits[i + 1];
-        }
-    }
-    return result;
-}
-
-Decimal Decimal::operator-(const Decimal& other) {
-    if (*this < other) { 
-        throw std::invalid_argument("Result is a negative or zero number");
-    }
-
-    size_t maxSize = size;
-    Decimal result;
     result.size = maxSize;
     result.digits = new unsigned char[result.size];
 
+    int carry = 0;
+    for (size_t i = 0; i < result.size; ++i){
+        result.digits[i] = digits[i] + other.digits[i] + carry;
+        carry = result.digits[i] / 10;
+        result.digits[i] %= 10;
+    }
+    if (carry) {
+        result.digits[result.size++] = 1;
+    }
+
+    return result;
+}
+
+Decimal Decimal::operator-(const Decimal& other) const {
+    if (*this < other) {
+        throw std::runtime_error("Result is a negative number");
+    }
+
+    Decimal result;
+        
+    size_t maxSize = std::max(size, other.size);
+    result.size = maxSize;
+    result.digits = new unsigned char[maxSize];
+
     int hold = 0;
-    unsigned char* resultPtr = result.digits + maxSize - 1;
-    const unsigned char* thisPtr = digits + maxSize - 1;
-    const unsigned char* otherPtr = other.digits + other.size - 1;
-
-    while (resultPtr >= result.digits) {
-        int diff = *thisPtr - hold;
-        if (otherPtr >= other.digits) {
-            diff -= *otherPtr;
-            otherPtr--;
-        }
-
+    for (size_t i = 0; i < result.size; ++i) {
+        int thisDigit = i < size ? digits[i] : 0;
+        int otherDigit = i < other.size ? other.digits[i] : 0;
+        int diff = thisDigit - otherDigit - hold;
         if (diff < 0) {
             diff += 10;
             hold = 1;
         } else {
             hold = 0;
         }
-
-        *resultPtr = diff;
-
-        resultPtr--;
-        thisPtr--;
+        result.digits[i] = diff;
     }
-
     result.removeZeros();
-    return result;
+    return result; 
 }
-
 
 
 bool Decimal::operator<(const Decimal& other) const {
@@ -158,24 +127,17 @@ bool Decimal::operator<(const Decimal& other) const {
 }
 
 bool Decimal::operator>(const Decimal& other) const {
-    return !(*this < other) && !(*this == other);
+    return *this != other && !(*this <= other);
 }
 
 bool Decimal::operator<=(const Decimal& other) const {
-    if (*this == other || *this < other) {
-        return true;
-    } else {
-        return false;
-    }
+    return *this == other || *this < other;
 }
 
 bool Decimal::operator>=(const Decimal& other) const {
-    if (*this == other || *this > other) {
-        return true;
-    } else {
-        return false;
-    }
+    return *this == other || *this > other;
 }
+
 
 bool Decimal::operator==(const Decimal& other) const {
     if (size != other.size) {
@@ -202,24 +164,32 @@ Decimal& Decimal::operator-=(const Decimal& value) {
 }
 
 Decimal& Decimal::operator++() {
-    *this += Decimal("1");
+    int carry = 1;
+    for (size_t i = 0; i < size; ++i){
+        int sum = digits[i] + carry;
+        digits[i] = sum % 10;
+        carry = sum / 10;
+    }
+    if (carry) {
+        digits[size++] = 1;
+    }
     return *this;
 }
 
 Decimal Decimal::operator++(int) {
     Decimal temp = *this;
-    *this += Decimal("1");
+    ++(*this);
     return temp;
 }
 
 Decimal& Decimal::operator--() {
-    *this -= Decimal("1");
+    *this = *this - Decimal("1");
     return *this;
 }
 
 Decimal Decimal::operator--(int) {
     Decimal temp = *this;
-    *this -= Decimal("1");
+    *this = *this - Decimal("1");
     return temp;
 }
 
@@ -231,17 +201,19 @@ std::ostream& operator<<(std::ostream& stream, const Decimal& digits) {
 }
 
 void Decimal::removeZeros() {
-    while (size > 1 && digits[0] == 0) {
-        for (size_t i = 0; i < size; ++i) {
-            digits[i] = digits[i + 1];
-        }
+    while (size > 1 && digits[size - 1] == 0) {
         size--;
     }
 }
 
 void Decimal::print() const{
+    std::cout << "Normal view of ";
     for (size_t i = 0; i < size; ++i) {
         std::cout << static_cast<int>(digits[i]);
+    }
+    std::cout << " is ";
+    for (size_t i = size; i > 0; --i) {
+        std::cout << static_cast<int>(digits[i - 1]);
     }
     std::cout << std::endl;
 }

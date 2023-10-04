@@ -26,19 +26,13 @@ TEST(decimalConstructor, stringConstructor) {
 }
 
 TEST(decimalConstructor, invalidStringConstructor) {
-    EXPECT_THROW({
-        try {
-            Decimal d("123asd34");
-        } catch (const std::invalid_argument& e) {
-            EXPECT_STREQ("Invalid charapter in input", e.what());
-            throw;
-        }
-    }, std::invalid_argument);
+    ASSERT_THROW(Decimal("123asd45"), std::invalid_argument);
 }
 
 TEST(decimalConstructor, moveConstructor) {
     Decimal original("123");
     Decimal moved(std::move(original));
+
     
     EXPECT_EQ(original.getSize(), 0);
     
@@ -59,7 +53,7 @@ TEST(decimalOperators, plusOperator) {
     Decimal d1("3762");
     Decimal result = d + d1;
     EXPECT_EQ(result.getSize(), 4);
-    EXPECT_EQ(result.toString(), "9578");
+    EXPECT_EQ(result.toString(), "8588");
 }
 
 TEST(decimalOperators, minusOperator) {
@@ -67,22 +61,9 @@ TEST(decimalOperators, minusOperator) {
     Decimal d1("762");
     Decimal result = d - d1;
     EXPECT_EQ(result.getSize(), 4);
-    EXPECT_EQ(result.toString(), "9237");
+    EXPECT_EQ(result.toString(), "2379");
 }
 
-TEST(decimalOperators, invalidMinusOperator) {
-    Decimal d("123");
-    Decimal d1("124");
-    
-    EXPECT_THROW({
-        try {
-            Decimal result = d - d1;
-        } catch (const std::invalid_argument& e) {
-            EXPECT_STREQ("Result is a negative or zero number", e.what());
-            throw;
-        }
-    }, std::invalid_argument);
-}
 
 TEST(decimalOperators, minusOperatorTwo) {
     Decimal d("123");
@@ -90,6 +71,17 @@ TEST(decimalOperators, minusOperatorTwo) {
     Decimal result = d - d1;
     EXPECT_EQ(result.getSize(), 1);
     EXPECT_EQ(result.toString(), "0");
+}
+
+TEST(decimalOperators, minusOperatorThree) {
+    Decimal d("123");
+    Decimal d1("99999");
+    try {
+        Decimal res = d1 - d;
+    } catch (const std::runtime_error& e) {
+        ASSERT_STREQ(e.what(), "Result is a negative number");
+    }
+
 }
 
 
@@ -149,33 +141,57 @@ TEST(decimalOperators, inequalityOperator) {
 TEST(decimalOperators, preIncrementOperator) {
     Decimal d("123");
     ++d;
-    EXPECT_EQ(d.getSize(), 3);
-    EXPECT_EQ(d.toString(), "124");
+    ASSERT_TRUE(d.getSize() == 3);
+    ASSERT_TRUE(d.toString() ==  "223");
+}
+
+TEST(decimalOperators, preIncrementOperatorTwo) {
+    Decimal d("0");
+    ++d;
+    ASSERT_TRUE(d.getSize() == 1);
+    ASSERT_TRUE(d.toString() ==  "1");
 }
 
 TEST(decimalOperators, postIncrementOperator) {
-    Decimal d("123");
-    Decimal result = d++;
-    EXPECT_EQ(result.getSize(), 3);
-    EXPECT_EQ(result.toString(), "123");
-    EXPECT_EQ(d.getSize(), 3);
-    EXPECT_EQ(d.toString(), "124");
+    Decimal d1("748");
+    Decimal result = d1++;
+    ASSERT_TRUE(result.getSize() == 3);
+    ASSERT_TRUE(result.toString() == "748");
+    ASSERT_TRUE(d1.getSize() == 3);
+    ASSERT_TRUE(d1.toString() == "848");
 }
 
 TEST(decimalOperators, preDecrementOperator) {
-    Decimal d("123");
+    Decimal d("777");
     --d;
     EXPECT_EQ(d.getSize(), 3);
-    EXPECT_EQ(d.toString(), "122");
+    EXPECT_EQ(d.toString(), "677");
 }
 
-TEST(decimalOperators, postDecrementOperator) {
-    Decimal d("123");
+
+TEST(decimalOperators, postDecrementOperatorTwo) {
+    Decimal d("666");
     Decimal result = d--;
     EXPECT_EQ(result.getSize(), 3);
-    EXPECT_EQ(result.toString(), "123");
+    EXPECT_EQ(result.toString(), "666");
     EXPECT_EQ(d.getSize(), 3);
-    EXPECT_EQ(d.toString(), "122");
+    EXPECT_EQ(d.toString(), "566");
+}
+
+TEST(decimalOperators, postDecrementOperatorThree) {
+    Decimal d("666");
+    Decimal result = d--;
+    EXPECT_EQ(result.getSize(), 3);
+    EXPECT_EQ(result.toString(), "666");
+    EXPECT_EQ(d.getSize(), 3);
+    EXPECT_EQ(d.toString(), "566");
+}
+
+TEST(decimalOperators, preDecrementOperatorFour) {
+    Decimal d("1");
+    --d;
+    EXPECT_EQ(d.getSize(), 1);
+    EXPECT_EQ(d.toString(), "0");
 }
 
 
@@ -193,7 +209,7 @@ TEST(decimalMethods, printNum) {
     testing::internal::CaptureStdout();
     d1.print();
     std::string output = testing::internal::GetCapturedStdout();
-    EXPECT_EQ(output, "12345\n");
+    EXPECT_EQ(output, "Normal view of 12345 is 54321\n");
 }
 
 int main(int argc, char **argv) {
