@@ -115,7 +115,7 @@ bool Decimal::operator<(const Decimal& other) const {
     } else if (size > other.size) {
         return false;
     } else {
-        for (size_t i = 0; i < size; ++i) {
+        for (size_t i = size - 1; i > 0; --i) {
             if (digits[i] < other.digits[i]) {
                 return true;
             } else if (digits[i] > other.digits[i]) {

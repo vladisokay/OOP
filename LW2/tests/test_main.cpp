@@ -89,9 +89,11 @@ TEST(decimalOperators, lessThanOperator) {
     Decimal d1("123");
     Decimal d2("456");
     Decimal d3("123");
+    Decimal d4("1234");
     EXPECT_TRUE(d1 < d2);
     EXPECT_FALSE(d2 < d1);
     EXPECT_FALSE(d3 < d1);
+    EXPECT_TRUE(d2 < d4);
 }
 
 TEST(decimalOperators, greaterThanOperator) {
