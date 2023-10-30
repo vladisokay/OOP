@@ -1,10 +1,10 @@
-#include "../../include/containers/vector.h"
+#include "vector.hpp"
 
 template <typename T>
 Vector<T>::Vector() {
     size = 0;
     capacity = 1;
-    data = reinterpret_cast<T*>(new int8_t(sizeof(T)));
+    data = reinterpret_cast<T*>(new int8_t[sizeof(T)]);
 }
 
 template <typename T>
@@ -14,7 +14,7 @@ Vector<T>::Vector(size_t cp) : capacity(cp), size(0){
 
 template <typename T>
 Vector<T>::Vector(const std::initializer_list<T>& other) {
-    T* newData = reinterpret_cast<T*>(new int8_t[(capacity + 1) * sizeof(T)]);
+    T* newData = reinterpret_cast<T*>(new int8_t[(other.size()) * sizeof(T)]);
     try {
         std::uninitialized_copy(other.begin(), other.end(), newData);
     } catch (...) {
@@ -30,7 +30,7 @@ template <typename T>
 Vector<T>::Vector(const Vector<T>& other) {
     size = other.size;
     capacity = other.capacity;
-    T* newData = reinterpret_cast<T*>(new int8_t[capacity + 1] * sizeof(T));
+    T* newData = reinterpret_cast<T*>(new int8_t[(capacity + 1) * sizeof(T)]);
 
     try {
         std::uninitialized_copy(other.data, other.data + other.size, newData);
@@ -50,7 +50,7 @@ Vector<T>::Vector(const Vector<T>&& other) noexcept : capacity(other.capacity), 
 
 template <typename T>
 Vector<T>& Vector<T>::operator = (const Vector<T>& other) {
-    if (*this == &other) {
+    if (this == &other) {
         return *this;
     }
 
@@ -62,7 +62,7 @@ Vector<T>& Vector<T>::operator = (const Vector<T>& other) {
 }
 
 template <typename T>
-Vector<T>& Vector<T>::operator = (const Vector<T>&& other) noexcept {
+Vector<T>& Vector<T>::operator = (Vector<T>&& other) noexcept {
     this->capacity = other.capacity;
     this->size = other.size;
     this->data = other.data;
@@ -83,12 +83,12 @@ Vector<T>::~Vector() {
 }
 
 template <typename T>
-size_t Vector<T>::getSize() const {
+size_t Vector<T>::get_size() const {
     return size;
 }
 
 template <typename T>
-size_t Vector<T>::getCapacity() const {
+size_t Vector<T>::get_capacity() const {
     return capacity;
 }
 
@@ -124,7 +124,7 @@ void Vector<T>::resize(size_t n, const T& value) {
     }
 
     for (size_t i = 0; i < size; ++i) {
-        new (data + 1) T(value);
+        new (data + i) T(value);
     }
 
     size = n;
@@ -170,6 +170,23 @@ void Vector<T>::pop_back() {
 }
 
 template <typename T>
+void Vector<T>::erase(size_t index) {
+    if (index >= size) throw std::range_error("Index out of range");
+    if (size == 0) return;
+
+    if (index == size - 1) {
+        pop_back();
+        return;
+    }
+
+    data[index].~T();
+    for (size_t i = index; i != size - 1; ++i) {
+        data[i] = data[i + 1];
+    }
+    pop_back();
+}
+
+template <typename T>
 T& Vector<T>::operator [] (size_t index) {
   return data[index];
 }
@@ -192,7 +209,7 @@ T& Vector<T>::at(size_t index) {
 template <typename T>
 const T& Vector<T>::at(size_t index) const {
     if (index >= size) {
-        throw std::range_error("Out of range")
+        throw std::range_error("Out of range");
     }
 
     return data[index];
@@ -240,4 +257,30 @@ std::ostream& operator<<(std::ostream& os, const Vector<T>& vector) {
         os << vector[i] << " ";
     }
     return os;
+}
+
+template <typename T>
+void Vector<T>::printGeometricCenter() const noexcept {
+    std::cout << std::endl << "Geometric center" << std::endl;
+    for (size_t i = 0; i != this->get_size(); ++i) {
+        std::cout << i << " " << (data[i]->geometricCenter()) << std::endl;
+    }
+}
+
+template <typename T>
+void Vector<T>::printArea() const noexcept {
+    std::cout << std::endl << "Area" << std::endl;
+    for (size_t i = 0; i != this->get_size(); ++i) {
+        std::cout << i << " " << data[i]->area() << std::endl;
+    }
+}
+
+template <typename T>
+double Vector<T>::calculateTotalArea() const noexcept {
+    double total_area = 0.0 ;
+    for (size_t i = 0; i != this->get_size(); ++i) {
+        total_area += (data[i]->area());
+    }
+
+    return total_area;
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <memory>
 #include <cstring>
@@ -9,6 +11,7 @@ private:
     int size;
     int capacity;
     T* data = nullptr;
+    
 public:
     Vector();
     Vector(size_t n);
@@ -16,21 +19,27 @@ public:
     Vector(const Vector&);
     Vector(const Vector&&) noexcept;
     Vector& operator = (const Vector<T>&);
-    Vector& operator = (const Vector<T>&&);
+    Vector& operator = (Vector<T>&&) noexcept;
 
     ~Vector();
 
-    size_t getSize() const;
-    size_t getCapacity() const;
+    size_t get_size() const;
+    size_t get_capacity() const;
 
     bool empty() const;
     bool operator == (const Vector<T>&) const;
     bool operator != (const Vector<T>&) const;
 
+    void printGeometricCenter() const noexcept;
+    void printArea() const noexcept;
+    
+    double calculateTotalArea() const noexcept;
+
     void resize(size_t, const T& = T());
     void push_back(const T&);
     void expand(size_t n);
     void pop_back();
+    void erase(size_t);
 
     T& operator [](size_t);
     T& at(size_t);
@@ -45,3 +54,4 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Vector<U>&);
 
 };
+
