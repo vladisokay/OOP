@@ -42,7 +42,7 @@ Vector<T>::Vector(const Vector<T>& other) {
 }
 
 template <typename T>
-Vector<T>::Vector(const Vector<T>&& other) noexcept : capacity(other.capacity), size(other.size), data(other.data) {
+Vector<T>::Vector(Vector<T>&& other) noexcept : capacity(other.capacity), size(other.size), data(other.data) {
     other.capacity = 0;
     other.size = 0;
     other.data = nullptr;
@@ -120,11 +120,17 @@ bool Vector<T>:: operator != (const Vector<T>& other) const {
 template <typename T>
 void Vector<T>::resize(size_t n, const T& value) {
     if (n > capacity) {
-        expand(n + 1);
+        expand(n);
+    } 
+    if (n > size) {
+        for (size_t i = size; i != n; ++i) {
+            new (data + i) T(value);
+        }
     }
-
-    for (size_t i = 0; i < size; ++i) {
-        new (data + i) T(value);
+    if (n < size) {
+        for (size_t i = n; i != size; ++i){
+            data[i].~T();
+        }
     }
 
     size = n;

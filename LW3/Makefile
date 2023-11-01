@@ -1,4 +1,4 @@
-.PHONY: build run point-tests rectangle-tests square-tests trapeze-tests vector-tests clean
+.PHONY: build run point-tests pentagon-tests hexagon-tests octagon-tests vector-tests clean
 
 build:
 	mkdir -p build
@@ -8,19 +8,19 @@ run:
 	./build/lw3
 
 point-tests:
-	./build/*testPoint
+	./build/*pointTest
 
-rectangle-tests:
-	./build/*testPentagon
+pentagon-tests:
+	./build/*pentagonTest
 
-square-tests:
-	./build/*testHexagon
+hexagon-tests:
+	./build/*hexagonTest
 
-trapeze-tests:
-	./build/*testOctagon
+octagon-tests:
+	./build/*octagonTest
 
 vector-tests:
-	./build/*testVector
+	./build/*vectorTest
 
 clean:
 	rm -rf ./build/

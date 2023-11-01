@@ -3,18 +3,9 @@
 #include "figure.hpp"
 
 class Octagon : public Figure {
-private:
-    Point _topOne;
-    Point _topTwo;
-    Point _topThree;
-    Point _topFour;
-    Point _topFive;
-    Point _topSix;
-    Point _topSeven;
-    Point _topEight;
-
 public:
     Octagon() = default;
+    Octagon(const Vector<Point>& points);
     Octagon(const Point&, const Point&, const Point&, const Point&, const Point&, const Point&, const Point&, const Point&);
     Octagon(const Octagon& other) noexcept;
     Octagon(Octagon&& other) noexcept;

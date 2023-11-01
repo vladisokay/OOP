@@ -17,7 +17,7 @@ public:
     Vector(size_t n);
     Vector(const std::initializer_list<T>&);
     Vector(const Vector&);
-    Vector(const Vector&&) noexcept;
+    Vector(Vector&&) noexcept;
     Vector& operator = (const Vector<T>&);
     Vector& operator = (Vector<T>&&) noexcept;
 

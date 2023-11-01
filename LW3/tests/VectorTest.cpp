@@ -194,7 +194,7 @@ TEST(resize_test, resize_empty_vector) {
   size_t size = 10;
   v.resize(size, std::string{"1"}); // TESTED
 
-  EXPECT_EQ(v.get_capacity(), size + 1);
+  EXPECT_EQ(v.get_capacity(), size);
   EXPECT_EQ(v.get_size(), size);
 
   for (size_t i = 0; i < v.get_size(); ++i) {
@@ -210,7 +210,7 @@ TEST(resize_test, non_empty_vector) {
   v.resize(size, std::string{"1"}); // TESTED
 
   EXPECT_EQ(v.get_size(), 15);
-  EXPECT_EQ(v.get_capacity(), 16);
+  EXPECT_EQ(v.get_capacity(), 15);
 
   EXPECT_EQ(v[0], std::string{"123"});
   EXPECT_EQ(v[1], std::string{"1234"});

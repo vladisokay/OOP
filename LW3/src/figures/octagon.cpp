@@ -42,66 +42,90 @@ bool Octagon::checkOctagon(
 
 }
 
-Octagon::Octagon(const Octagon& other) noexcept :
-    _topOne(other._topOne),
-    _topTwo(other._topTwo),
-    _topThree(other._topThree),
-    _topFour(other._topFour),
-    _topFive(other._topFive),
-    _topSix(other._topSix),
-    _topSeven(other._topSeven),
-    _topEight(other._topEight) {}
+Octagon::Octagon(const Octagon& other) noexcept {
+    coordinates[0] = other.coordinates[0];
+    coordinates[1] = other.coordinates[1];
+    coordinates[2] = other.coordinates[2];
+    coordinates[3] = other.coordinates[3];
+    coordinates[4] = other.coordinates[4];
+    coordinates[5] = other.coordinates[5];
+    coordinates[6] = other.coordinates[6];
+    coordinates[7] = other.coordinates[7];
+}
+
+Octagon::Octagon(const Vector<Point>& points) {
+    if (points.get_size() < 8) {
+        throw std::invalid_argument("Invalid number of vertices.");
+    }
+    bool isOctagon = checkOctagon(points[0], points[1], points[2], points[3], points[4], points[5], points[6], points[7]);
+
+    if (!isOctagon) {
+        throw std::invalid_argument("Invalid points.");
+    }
+
+    coordinates = {points[0], points[1], points[2], points[3], points[4], points[5], points[6], points[7]};
+
+}
 
 Octagon::Octagon(Octagon&& other) noexcept {
-    this->_topOne = std::move(other._topOne);
-    this->_topTwo = std::move(other._topTwo);
-    this->_topThree = std::move(other._topThree);
-    this->_topFour = std::move(other._topFour);
-    this->_topFive = std::move(other._topFive);
-    this->_topSix = std::move(other._topSix);
-    this->_topSeven = std::move(other._topSeven);
-    this->_topEight = std::move(other._topEight);
+    this->coordinates[0] = std::move(other.coordinates[0]);
+    this->coordinates[1] = std::move(other.coordinates[1]);
+    this->coordinates[2] = std::move(other.coordinates[2]);
+    this->coordinates[3] = std::move(other.coordinates[3]);
+    this->coordinates[4] = std::move(other.coordinates[4]);
+    this->coordinates[5] = std::move(other.coordinates[5]);
+    this->coordinates[6] = std::move(other.coordinates[6]);
+    this->coordinates[7] = std::move(other.coordinates[7]);
 }
 
 Octagon& Octagon::operator = (const Octagon& other) noexcept {
     if (this == &other) return *this;
 
-    this->_topOne = other._topOne;
-    this->_topTwo = other._topTwo;
-    this->_topThree = other._topThree;
-    this->_topFour = other._topFour;
-    this->_topFive = other._topFive;
-    this->_topSix = other._topSix;
-    this->_topSeven = other._topSeven;
-    this->_topEight = other._topEight;
+    this->coordinates[0] = other.coordinates[0];
+    this->coordinates[1] = other.coordinates[1];
+    this->coordinates[2] = other.coordinates[2];
+    this->coordinates[3] = other.coordinates[3];
+    this->coordinates[4] = other.coordinates[4];
+    this->coordinates[5] = other.coordinates[5];
+    this->coordinates[6] = other.coordinates[6];
+    this->coordinates[7] = other.coordinates[7];
 
     return *this;
 
 }
 
 Octagon& Octagon::operator = (Octagon&& move) noexcept {
-    this->_topOne = std::move(move._topOne);
-    this->_topTwo = std::move(move._topTwo);
-    this->_topThree = std::move(move._topThree);
-    this->_topFour = std::move(move._topFour);
-    this->_topFive = std::move(move._topFive);
-    this->_topSix = std::move(move._topSix);
-    this->_topSeven = std::move(move._topSeven);
-    this->_topEight = std::move(move._topEight);
+    this->coordinates[0] = std::move(move.coordinates[0]);
+    this->coordinates[1] = std::move(move.coordinates[1]);
+    this->coordinates[2] = std::move(move.coordinates[2]);
+    this->coordinates[3] = std::move(move.coordinates[3]);
+    this->coordinates[4] = std::move(move.coordinates[4]);
+    this->coordinates[5] = std::move(move.coordinates[5]);
+    this->coordinates[6] = std::move(move.coordinates[6]);
+    this->coordinates[7] = std::move(move.coordinates[7]);
+
+    move.coordinates[0] = Point();
+    move.coordinates[1] = Point();
+    move.coordinates[2] = Point();
+    move.coordinates[3] = Point();
+    move.coordinates[4] = Point();
+    move.coordinates[5] = Point();
+    move.coordinates[6] = Point();
+    move.coordinates[7] = Point();
 
     return *this;
 }
 
 bool Octagon::operator == (const Octagon& other) const{
-    return  ( this->_topOne == other._topOne &&
-               this->_topOne == other._topOne &&
-               this->_topTwo == other._topTwo &&
-               this->_topThree == other._topThree &&
-               this->_topFour == other._topFour &&
-               this->_topFive == other._topFive &&
-               this->_topSix == other._topSix &&
-               this->_topSeven == other._topSeven &&
-               this->_topEight == other._topEight ) ;
+    return  ( this->coordinates[0] == other.coordinates[0] &&
+               this->coordinates[0] == other.coordinates[0] &&
+               this->coordinates[1] == other.coordinates[1] &&
+               this->coordinates[2] == other.coordinates[2] &&
+               this->coordinates[3] == other.coordinates[3] &&
+               this->coordinates[4] == other.coordinates[4] &&
+               this->coordinates[5] == other.coordinates[5] &&
+               this->coordinates[6] == other.coordinates[6] &&
+               this->coordinates[7] == other.coordinates[7] ) ;
 }
 
 Octagon::Octagon(
@@ -132,7 +156,6 @@ Point Octagon::geometricCenter() const noexcept{
         center_x += coordinates[i].getX();
         center_y += coordinates[i].getY();
     }
-    std::cout << "lyalyalya" << std::endl;
     return Point(center_x / 8.0, center_y / 8.0);
 }
 
@@ -153,19 +176,19 @@ Octagon::operator double() const {
 }
 
 std::istream& operator>>(std::istream& is, Octagon& o) {
-    is >> o._topOne >> o._topTwo >> o._topThree >> o._topFour >> o._topFive >> o._topSix >> o._topSeven >> o._topEight;
+    is >> o.coordinates[0] >> o.coordinates[1]  >> o.coordinates[2] >> o.coordinates[3] >> o.coordinates[4] >> o.coordinates[5] >> o.coordinates[6]  >> o.coordinates[7];
     return is; 
 }
 
 std::ostream& operator<<(std::ostream& os, const Octagon& o) {
-    os << o._topOne << std::endl;
-    os << o._topTwo << std::endl;
-    os << o._topThree << std::endl;
-    os << o._topFour << std::endl;
-    os << o._topFive << std::endl; 
-    os << o._topSix << std::endl; 
-    os << o._topSeven << std::endl; 
-    os << o._topEight << std::endl; 
+    os << o.coordinates[0] << std::endl;
+    os << o.coordinates[1] << std::endl;
+    os << o.coordinates[2] << std::endl;
+    os << o.coordinates[3] << std::endl;
+    os << o.coordinates[4] << std::endl; 
+    os << o.coordinates[5] << std::endl; 
+    os << o.coordinates[6] << std::endl; 
+    os << o.coordinates[7] << std::endl; 
 
     return os;
 }

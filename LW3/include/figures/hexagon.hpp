@@ -3,16 +3,9 @@
 #include "figure.hpp"
 
 class Hexagon final : public Figure {
-private:
-    Point _topOne;
-    Point _topTwo;
-    Point _topThree;
-    Point _topFour;
-    Point _topFive;
-    Point _topSix;
-
 public:
     Hexagon() = default;
+    Hexagon(const Vector<Point>& points);
     Hexagon(const Point&, const Point&, const Point&, const Point&, const Point&, const Point&);
     Hexagon(const Hexagon& other) noexcept;
     Hexagon(Hexagon&& other) noexcept;
@@ -24,7 +17,7 @@ public:
     
     virtual Point geometricCenter() const noexcept override;
     virtual double area() const noexcept override;
-    static double angle(const Point& p1, const Point& p2, const Point& p3) noexcept;
+
 
     virtual operator double() const override;
 
@@ -36,5 +29,4 @@ public:
 
 private:
     static bool checkHexagon(const Point&, const Point&, const Point&, const Point&, const Point&, const Point&) noexcept;
-
 };

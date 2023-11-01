@@ -1,16 +1,5 @@
 #include "../../include/figures/hexagon.hpp"
 
-double Hexagon::angle(
-    const Point& p1,
-    const Point& p2,
-    const Point& p3
-) noexcept {
-    double a = Point::distance(p1, p2);
-    double b = Point::distance(p2, p3);
-    double c = Point::distance(p3, p1);
-
-    return std::acos((a * a + b * b - c * c) / (2 * a * b));
-}
 
 bool Hexagon::checkHexagon(
     const Point& p1,
@@ -20,77 +9,109 @@ bool Hexagon::checkHexagon(
     const Point& p5,
     const Point& p6
 ) noexcept {
+    double sum_x = p1.getX() + p2.getX() + p3.getX() + p4.getX() + p5.getX() + p6.getX();
+    double sum_y = p1.getY() + p2.getY() + p3.getY() + p4.getY() + p5.getY() + p6.getY();
+
+    Point center(sum_x / 6.0, sum_y / 6.0);
 
     double inaccuracy = 1e-10;
-    double sideLength = Point::distance(p1, p2);
-    for (const Point& p : {p2, p3, p4, p5, p6}) {
-        if (std::abs(Point::distance(p1, p) - sideLength) > inaccuracy) {
-            std::cout << p.getX() << ' ' << p.getY() << std::endl;
-            return false; 
-        }
+
+    double lenToP1 = Point::distance(center, p1);
+    double lenToP2 = Point::distance(center, p2);
+    double lenToP3 = Point::distance(center, p3);
+    double lenToP4 = Point::distance(center, p4);
+    double lenToP5 = Point::distance(center, p5);
+    double lenToP6 = Point::distance(center, p6);
+
+
+    if (
+        std::abs(lenToP1 - lenToP2) < inaccuracy &&
+        std::abs(lenToP2 - lenToP3) < inaccuracy &&
+        std::abs(lenToP3 - lenToP4) < inaccuracy &&
+        std::abs(lenToP4 - lenToP5) < inaccuracy &&
+        std::abs(lenToP5 - lenToP6) < inaccuracy
+    ) {
+        return true;
     }
 
-    // Вычисляем углы между смежными сторонами
-    double angleValue = angle(p1, p2, p3);
-    for (const Point& p : {p3, p4, p5, p6}) {
-        if (std::abs(angle(p, p1, p2) - angleValue) > inaccuracy) {
-            return false; 
-        }
+    return false;
+}
+
+Hexagon::Hexagon(const Vector<Point>& points) {
+    if (points.get_size() < 6) {
+        throw std::invalid_argument("Invalid number of vertices.");
+    }
+    bool isHexagon = checkHexagon(points[0],
+                                  points[1],
+                                  points[2],
+                                  points[3],
+                                  points[4],
+                                  points[5]);
+    if (!isHexagon) {
+        throw std::invalid_argument("Invalid points.");
     }
 
-    return true; 
+    coordinates = {points[0], points[1], points[2], points[3], points[4], points[5]};
 
 }
 
-Hexagon::Hexagon(const Hexagon& other) noexcept :
-    _topOne(other._topOne),
-    _topTwo(other._topTwo),
-    _topThree(other._topThree),
-    _topFour(other._topFour),
-    _topFive(other._topFive),
-    _topSix(other._topSix) {}
+Hexagon::Hexagon(const Hexagon& other) noexcept {
+    coordinates[0] = other.coordinates[0];
+    coordinates[1] = other.coordinates[1];
+    coordinates[2] = other.coordinates[2];
+    coordinates[3] = other.coordinates[3];
+    coordinates[4] = other.coordinates[4];
+    coordinates[5] = other.coordinates[5];
+}
 
 Hexagon::Hexagon(Hexagon&& other) noexcept {
-    this->_topOne = std::move(other._topOne);
-    this->_topTwo = std::move(other._topTwo);
-    this->_topThree = std::move(other._topThree);
-    this->_topFour = std::move(other._topFour);
-    this->_topFive = std::move(other._topFive);
-    this->_topSix = std::move(other._topSix);
+    this->coordinates[0] = std::move(other.coordinates[0]);
+    this->coordinates[1] = std::move(other.coordinates[1]);
+    this->coordinates[2] = std::move(other.coordinates[2]);
+    this->coordinates[3] = std::move(other.coordinates[3]);
+    this->coordinates[4] = std::move(other.coordinates[4]);
+    this->coordinates[5] = std::move(other.coordinates[5]);
 }
 
 Hexagon& Hexagon::operator = (const Hexagon& other) noexcept {
     if (this == &other) return *this;
 
-    this->_topOne = other._topOne;
-    this->_topTwo = other._topTwo;
-    this->_topThree = other._topThree;
-    this->_topFour = other._topFour;
-    this->_topFive = other._topFive;
-    this->_topSix = other._topSix;
+    this->coordinates[0] = other.coordinates[0];
+    this->coordinates[1] = other.coordinates[1];
+    this->coordinates[2] = other.coordinates[2];
+    this->coordinates[3] = other.coordinates[3];
+    this->coordinates[4] = other.coordinates[4];
+    this->coordinates[5] = other.coordinates[5];
     return *this;
 
 }
 
 Hexagon& Hexagon::operator = (Hexagon&& move) noexcept {
-    this->_topOne = std::move(move._topOne);
-    this->_topTwo = std::move(move._topTwo);
-    this->_topThree = std::move(move._topThree);
-    this->_topFour = std::move(move._topFour);
-    this->_topFive = std::move(move._topFive);
-    this->_topSix = std::move(move._topSix);
+    this->coordinates[0] = std::move(move.coordinates[0]);
+    this->coordinates[1] = std::move(move.coordinates[1]);
+    this->coordinates[2] = std::move(move.coordinates[2]);
+    this->coordinates[3] = std::move(move.coordinates[3]);
+    this->coordinates[4] = std::move(move.coordinates[4]);
+    this->coordinates[5] = std::move(move.coordinates[5]);
+
+    move.coordinates[0] = Point();
+    move.coordinates[1] = Point();
+    move.coordinates[2] = Point();
+    move.coordinates[3] = Point();
+    move.coordinates[4] = Point();
+    move.coordinates[5] = Point();
 
     return *this;
 }
 
 bool Hexagon::operator == (const Hexagon& other) const{
-    return  ( this->_topOne == other._topOne &&
-               this->_topOne == other._topOne &&
-               this->_topTwo == other._topTwo &&
-               this->_topThree == other._topThree &&
-               this->_topFour == other._topFour &&
-               this->_topFive == other._topFive &&
-               this->_topSix == other._topSix);
+    return  ( this->coordinates[0] == other.coordinates[0] &&
+               this->coordinates[0] == other.coordinates[0] &&
+               this->coordinates[1] == other.coordinates[1] &&
+               this->coordinates[2] == other.coordinates[2] &&
+               this->coordinates[3] == other.coordinates[3] &&
+               this->coordinates[4] == other.coordinates[4] &&
+               this->coordinates[5] == other.coordinates[5]);
 }
 
 Hexagon::Hexagon(
@@ -140,17 +161,17 @@ Hexagon::operator double() const {
 }
 
 std::istream& operator>>(std::istream& is, Hexagon& p) {
-    is >> p._topOne >> p._topTwo >> p._topThree >> p._topFour >> p._topFive >> p._topSix;
+    is >> p.coordinates[0] >> p.coordinates[1] >> p.coordinates[2] >> p.coordinates[3] >> p.coordinates[4] >> p.coordinates[5];
     return is; 
 }
 
 std::ostream& operator<<(std::ostream& os, const Hexagon& o) {
-    os << o._topOne << std::endl;
-    os << o._topTwo << std::endl;
-    os << o._topThree << std::endl;
-    os << o._topFour << std::endl;
-    os << o._topFive << std::endl; 
-    os << o._topSix << std::endl; 
+    os << o.coordinates[0] << std::endl;
+    os << o.coordinates[1] << std::endl;
+    os << o.coordinates[2] << std::endl;
+    os << o.coordinates[3] << std::endl;
+    os << o.coordinates[4] << std::endl; 
+    os << o.coordinates[5] << std::endl; 
 
     return os;
 }
