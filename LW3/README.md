@@ -36,17 +36,17 @@ make run
 ```
 make point-tests
 ```
-#### Run rectangle-tests:
+#### Run pentagon-tests:
 ```
-make rectangle-tests
+make pentagon-tests
 ```
-#### Run square-tests:
+#### Run hexagon-tests:
 ```
-make square-tests
+make hexagon-tests
 ```
-#### Run trapeze-tests:
+#### Run octagon-tests:
 ```
-make trapeze-tests
+make octagon-tests
 ```
 #### Run vector-tests:
 ```
