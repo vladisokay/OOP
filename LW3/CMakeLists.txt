@@ -125,28 +125,6 @@ add_dependencies(${PROJECT_NAME}_vectorTest ${PROJECT_NAME}_lib)
 
 target_link_libraries(${PROJECT_NAME}_vectorTest ${PROJECT_NAME}_lib GTest::GTest GTest::Main)
 
-# add_executable(testVector 
-#               tests/VectorTest.cpp
-#               src/containers/vector.cpp)
 
-# add_executable(testPoint
-#                tests/PointTest.cpp
-#                src/figures/point.cpp)
-
-# add_executable(testPentagon
-#                tests/PentagonTest.cpp 
-#                src/figures/pentagon.cpp)
-
-# add_executable(testHexagon
-#                tests/HexagonTest.cpp 
-#                src/figures/hexagon.cpp)
-
-# add_executable(testOctagon
-#                tests/OctagonTest.cpp
-#                src/figures/octagon.cpp)
-# target_link_libraries(testVector GTest::GTest GTest::Main)
-# target_link_libraries(testPoint GTest::GTest GTest::Main)
-# target_link_libraries(testHexagon GTest::GTest GTest::Main)
-# target_link_libraries(testOctagon GTest::GTest GTest::Main)
 
 
