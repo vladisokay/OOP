@@ -132,7 +132,7 @@ void Vector<T>::resize(size_t n, const T& value) {
             data[i].~T();
         }
     }
-
+    
     size = n;
 }
 
