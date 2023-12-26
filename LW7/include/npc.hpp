@@ -48,6 +48,8 @@ public:
     NPC(NpcType, int, int);
     NPC(NpcType, std::istream&);
 
+    virtual ~NPC() = default;
+
     NpcType get_type();
 
     virtual bool accept(const std::shared_ptr<NPC>&) const = 0;

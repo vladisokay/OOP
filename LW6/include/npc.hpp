@@ -35,6 +35,8 @@ struct NPC : public std::enable_shared_from_this<NPC> {
     int y{0};
     std::vector<std::shared_ptr<IFightObserver>> observers;
 
+    virtual ~NPC() = default;
+
     NPC(NpcType t, int _x, int _y);
     NPC(NpcType t, std::istream &is);
 
